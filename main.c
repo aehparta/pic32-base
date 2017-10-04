@@ -1,72 +1,49 @@
+
 #include <proc/p32mz1024efg064.h>
+#include <sys/types.h>
 
-/*** DEVCFG0 ***/
+void init(void)
+{
+	/* ANSELx: digital or analog (not supported on all ports), 0 digital, 1 analog
+	 * TRISx: direction, 0 output, 1 input
+	 * ODCx: open drain, 0 disabled, 1 enabled
+	 * CNENx: change notification, 0 disabled, 1 enabled
+	 * CNPUx: pull up, 0 disabled, 1 enabled
+	 * CNPDx: pull down, 0 disabled, 1 enabled
+	 */
 
-#pragma config DEBUG =      OFF
-#pragma config JTAGEN =     OFF
-#pragma config ICESEL =     ICS_PGx1
-#pragma config TRCEN =      OFF
-#pragma config BOOTISA =    MIPS32
-#pragma config FECCCON =    OFF_UNLOCKED
-#pragma config FSLEEP =     OFF
-#pragma config DBGPER =     PG_ALL
-#pragma config SMCLR =      MCLR_NORM
-#pragma config SOSCGAIN =   GAIN_LEVEL_3
-#pragma config SOSCBOOST =  ON
-#pragma config POSCGAIN =   GAIN_LEVEL_3
-#pragma config POSCBOOST =  ON
-#pragma config EJTAGBEN =   NORMAL
-#pragma config CP =         OFF
+	/* port B */
+	ANSELB = 0x0000;
 
-/*** DEVCFG1 ***/
+	/* port D */
+	TRISD = 0xffff;
+	ODCD = 0x0000;
+	CNEND = 0x0000;
+	CNPUD = 0xffff;
+	CNPDD = 0x0000;
 
-#pragma config FNOSC =      SPLL
-#pragma config DMTINTV =    WIN_127_128
-#pragma config FSOSCEN =    OFF
-#pragma config IESO =       OFF
-#pragma config POSCMOD =    HS
-#pragma config OSCIOFNC =   OFF
-#pragma config FCKSM =      CSECME
-#pragma config WDTPS =      PS1048576
-#pragma config WDTSPGM =    STOP
-#pragma config FWDTEN =     OFF
-#pragma config WINDIS =     NORMAL
-#pragma config FWDTWINSZ =  WINSZ_25
-#pragma config DMTCNT =     DMT31
-#pragma config FDMTEN =     OFF
-/*** DEVCFG2 ***/
+	/* port E */
+	ANSELE = 0x0000;
 
-#pragma config FPLLIDIV =   DIV_1
-#pragma config FPLLRNG =    RANGE_5_10_MHZ
-#pragma config FPLLICLK =   PLL_FRC
-#pragma config FPLLMULT =   MUL_50
-#pragma config FPLLODIV =   DIV_4
-#pragma config UPLLFSEL =   FREQ_24MHZ
-/*** DEVCFG3 ***/
+	/* port F */
+	TRISF = 0xfffc;
+	ODCF = 0x0000;
+	CNENF = 0x0000;
+	CNPUF = 0x0000;
+	CNPDF = 0x0000;
 
-#pragma config USERID =     0xffff
-#pragma config FMIIEN =     ON
-#pragma config FETHIO =     ON
-#pragma config PGL1WAY =    ON
-#pragma config PMDL1WAY =   ON
-#pragma config IOL1WAY =    ON
-#pragma config FUSBIDIO =   ON
-
-/*** BF1SEQ0 ***/
-
-#pragma config TSEQ =       0x0000
-#pragma config CSEQ =       0xffff
+	/* port G */
+	ANSELG = 0x0000;
+}
 
 int main(void)
 {
-	TRISF = 0x00;
-	ODCF = 0x00;
+	uint16_t mask = (1 << 11);
+
+	init();
 
 	while (1) {
-		PORTF = 0x2;
-		PORTF = 0x0;
-		PORTF = 0x3;
-		PORTF = 0x1;
+		PORTF ^= 1;
 	}
 
 	return 0;

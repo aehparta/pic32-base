@@ -2,7 +2,7 @@
 MCU = 32MZ1024EFG064
 FORMAT = ihex
 TARGET = test
-SRC = main.c
+SRC = main.c config.c
 
 PROGRAMMER = PPK3
 IPE_CMD = ipecmd
@@ -21,7 +21,7 @@ DEBUG =
 # C-standard
 CSTANDARD = gnu99
 # optimization level
-OPT = 0
+OPT = 1
 
 # compiler flags
 CFLAGS = -mprocessor=$(MCU) -g$(DEBUG) -x c -O$(OPT) -std=$(CSTANDARD) -ffunction-sections -fdata-sections -no-legacy-libc
@@ -39,10 +39,11 @@ OBJ = $(SRC:.c=.o) $(ASRC:.S=.o)
 # default target
 all: build
 
-build: elf hex size
+build: elf hex lss size
 
 elf: $(TARGET).elf
 hex: $(TARGET).hex
+lss: $(TARGET).lss
 
 size:
 	$(SIZE) --target=$(FORMAT) $(TARGET).hex
@@ -63,6 +64,10 @@ program: $(TARGET).hex
 # create final output file (.hex) from elf
 %.hex: %.elf
 	$(BIN2HEX) $<
+
+# create extended listing file from ELF output file.
+%.lss: %.elf
+	$(OBJDUMP) -h -S $< > $@
 
 .PHONY : all build hex size program clean
 
